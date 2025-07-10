@@ -1,0 +1,191 @@
+/* src/pages/pages.css */
+
+/* Container principal */
+.dashboard-container {
+  padding: 2rem 0;
+  background-color: #E8F7F6;
+  min-height: calc(100vh - 64px);
+}
+
+/* Cabeçalho do dashboard */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(52, 136, 136, 0.1);
+  border-left: 4px solid #FA7F08;
+}
+
+/* Título do dashboard */
+.dashboard-title {
+  font-weight: bold;
+  font-size: 1.8rem;
+  color: #348888;
+}
+
+/* Botão de nova rifa */
+.new-rifa-button {
+  background-color: #FA7F08;
+  color: white !important;
+  text-transform: none;
+  font-weight: bold;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+}
+
+.new-rifa-button:hover {
+  background-color: #F24405;
+}
+
+/* Cards de rifa */
+.rifa-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  border-top: 3px solid #22BABB;
+}
+
+.rifa-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 5px 15px rgba(52, 136, 136, 0.2) !important;
+}
+
+/* Cores de status */
+.card-header-ativa {
+  background-color: #22BABB !important;
+}
+
+.card-header-encerrada {
+  background-color: #F24405 !important;
+}
+
+.card-header-cancelada {
+  background-color: #348888 !important;
+}
+
+.card-header .MuiCardHeader-subheader {
+  color: rgba(255,255,255,0.8) !important;
+}
+
+/* Conteúdo do card */
+.rifa-card-content {
+  flex-grow: 1;
+  padding: 1.5rem !important;
+  background-color: #F8FDFD;
+}
+
+/* Texto de preço */
+.price-text {
+  color: #FA7F08;
+  font-weight: bold;
+}
+
+/* Botões de ação */
+.action-button {
+  margin-left: 4px;
+  color: #348888;
+}
+
+.action-button:hover {
+  background-color: rgba(52, 136, 136, 0.1) !important;
+}
+
+/* Container de loading */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+/* Alertas de erro */
+.error-alert {
+  background-color: #FEE8E0 !important;
+  color: #F24405 !important;
+  margin-bottom: 1.5rem !important;
+  border-left: 4px solid #F24405;
+}
+
+/* Estilos para a página de Login */
+.login-container {
+  background-color: #E8F7F6;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-paper {
+  border-radius: 12px !important;
+  box-shadow: 0px 4px 20px rgba(52, 136, 136, 0.2) !important;
+  border-top: 4px solid #FA7F08 !important;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
+}
+
+.login-avatar {
+  background-color: #348888 !important;
+  margin: 0 auto 16px !important;
+  width: 60px !important;
+  height: 60px !important;
+}
+
+.login-title {
+  color: #348888 !important;
+  font-weight: 600 !important;
+  margin-bottom: 24px !important;
+  text-align: center;
+}
+
+.login-text-field .MuiOutlinedInput-root {
+  background-color: white;
+  border-radius: 8px;
+}
+
+.login-text-field .MuiInputLabel-root {
+  color: #348888 !important;
+}
+
+.login-text-field .MuiOutlinedInput-notchedOutline {
+  border-color: #9EF8EE !important;
+}
+
+.login-text-field:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #22BABB !important;
+}
+
+.login-text-field .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #FA7F08 !important;
+  border-width: 2px;
+}
+
+.login-checkbox .Mui-checked {
+  color: #348888 !important;
+}
+
+.login-button {
+  background-color: #FA7F08 !important;
+  color: white !important;
+  font-weight: 500 !important;
+  padding: 10px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+.login-button:hover {
+  background-color: #F24405 !important;
+  transform: translateY(-2px);
+}
+
+.login-error-alert {
+  background-color: #FFEBEE !important;
+  color: #F24405 !important;
+  border-left: 4px solid #F24405 !important;
+}

@@ -1,5 +1,5 @@
-// src/components/RifaFormDialog.tsx
-import { useState } from "react";
+// src/components/EditarRifaDialog.tsx
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -9,105 +9,98 @@ import {
   Button,
   MenuItem,
 } from "@mui/material";
-import "./components.css"; // Importe o CSS
 
-interface RifaFormDialogProps {
+interface EditarRifaDialogProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (rifa: any) => void;
-  initialData?: any;
-  organizadorId: number;
+  rifaData: any;
 }
 
-export default function RifaFormDialog({
+export default function EditarRifaDialog({
   open,
   onClose,
   onSubmit,
-  initialData,
-  organizadorId,
-}: RifaFormDialogProps) {
-  const [rifa, setRifa] = useState(
-    initialData || {
-      titulo: "",
-      descricao: "",
-      precoBilhete: 0,
-      quantidadeBilhetes: 0,
-      dataSorteio: "",
-      status: "Ativa",
-      organizadorId: organizadorId,
-    }
-  );
+  rifaData,
+}: EditarRifaDialogProps) {
+  const [rifa, setRifa] = useState(rifaData);
+
+  useEffect(() => {
+    setRifa(rifaData);
+  }, [rifaData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setRifa({ ...rifa, [name]: value });
   };
 
+  const handleSubmit = () => {
+    onSubmit(rifa);
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} className="rifa-dialog">
-      <DialogTitle className="rifa-dialog-title">
-        {initialData ? "Editar Rifa" : "Nova Rifa"}
-      </DialogTitle>
-      <DialogContent className="rifa-dialog-content">
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Editar Rifa</DialogTitle>
+      <DialogContent>
         <TextField
-          className="rifa-text-field"
           margin="dense"
           name="titulo"
           label="Título"
           fullWidth
-          value={rifa.titulo}
+          value={rifa.titulo || ""}
           onChange={handleChange}
+          required
         />
         <TextField
-          className="rifa-text-field"
           margin="dense"
           name="descricao"
           label="Descrição"
           fullWidth
           multiline
           rows={4}
-          value={rifa.descricao}
+          value={rifa.descricao || ""}
           onChange={handleChange}
         />
         <TextField
-          className="rifa-text-field"
           margin="dense"
           name="precoBilhete"
           label="Preço do Bilhete"
           type="number"
           fullWidth
-          value={rifa.precoBilhete}
+          value={rifa.precoBilhete || 0}
           onChange={handleChange}
+          inputProps={{ min: 0, step: 0.01 }}
+          required
         />
         <TextField
-          className="rifa-text-field"
           margin="dense"
           name="quantidadeBilhetes"
           label="Quantidade de Bilhetes"
           type="number"
           fullWidth
-          value={rifa.quantidadeBilhetes}
+          value={rifa.quantidadeBilhetes || 0}
           onChange={handleChange}
+          inputProps={{ min: 1 }}
+          required
         />
         <TextField
-          className="rifa-text-field rifa-date-field"
           margin="dense"
           name="dataSorteio"
           label="Data do Sorteio"
           type="date"
           InputLabelProps={{ shrink: true }}
           fullWidth
-          value={rifa.dataSorteio}
+          value={rifa.dataSorteio || ""}
           onChange={handleChange}
         />
         <TextField
-          className="rifa-text-field rifa-select"
           margin="dense"
           name="status"
           label="Status"
           select
           fullWidth
-          value={rifa.status}
+          value={rifa.status || "Ativa"}
           onChange={handleChange}
         >
           <MenuItem value="Ativa">Ativa</MenuItem>
@@ -115,12 +108,10 @@ export default function RifaFormDialog({
           <MenuItem value="Cancelada">Cancelada</MenuItem>
         </TextField>
       </DialogContent>
-      <DialogActions className="rifa-dialog-actions">
-        <Button className="rifa-cancel-button" onClick={onClose}>
-          Cancelar
-        </Button>
-        <Button className="rifa-submit-button" onClick={() => onSubmit(rifa)}>
-          Salvar
+      <DialogActions>
+        <Button onClick={onClose}>Cancelar</Button>
+        <Button onClick={handleSubmit} color="primary">
+          Salvar Alterações
         </Button>
       </DialogActions>
     </Dialog>

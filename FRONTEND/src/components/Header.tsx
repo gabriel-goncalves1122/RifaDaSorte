@@ -1,27 +1,50 @@
-import { AppBar, Toolbar, Typography, IconButton, Button, Box } from '@mui/material';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import { useThemeMode } from '../theme/ThemeContext';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
+// src/components/Header.tsx
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Button,
+  Box,
+} from "@mui/material";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { useThemeMode } from "../theme/ThemeContext";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/AuthContext";
+import "./components.css"; // Importação do CSS
+
 const Header = () => {
   const { isDark, toggleTheme } = useThemeMode();
   const { logout } = useAuth();
   const navigate = useNavigate();
+
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
+
   return (
-    <AppBar position="static" color="primary" elevation={2}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">Meu App</Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <IconButton color="inherit" onClick={toggleTheme}>
+    <AppBar position="static" className="app-header">
+      <Toolbar className="header-toolbar">
+        <Typography variant="h6" className="app-title">
+          Meu App
+        </Typography>
+        <Box className="header-actions">
+          <IconButton
+            className="theme-toggle-button"
+            onClick={toggleTheme}
+            aria-label="Alternar tema"
+          >
             {isDark ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
-          <Button color="inherit" onClick={handleLogout}>Sair</Button>
-        </Box></Toolbar></AppBar>
+          <Button className="logout-button" onClick={handleLogout}>
+            Sair
+          </Button>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
+
 export default Header;
