@@ -25,16 +25,17 @@ async function clearDatabase() {
     "Participante", 
     "Organizador", 
     "Usuario", 
-    "Notificacao", 
-    "LogAuditoria" 
+    "Notificacao",
+    "LogAuditoria"
     CASCADE`;
   console.log("🔄 Banco de dados limpo com sucesso!");
 }
 
 async function main() {
-  await prisma.$executeRaw`TRUNCATE TABLE "PremioParticipante", "SorteioBilhete", "Pagamento", "Bilhete", "Sorteio", "Premio", "Rifa", "Participante", "Organizador", "Usuario", "Notificacao", "LogAuditoria" CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "PremioParticipante", "SorteioBilhete", "Pagamento", "Bilhete", "Sorteio", "Premio", "Rifa", "Participante", "Organizador", "Usuario", "Notificacao", "LogAuditoria"`;
 
   await clearDatabase();
+
   // Hash todas as senhas antes de criar os usuários
   const usuariosData = [
     // Organizadores
@@ -287,6 +288,23 @@ async function main() {
     }),
   ]);
 
+  for (const rifa of rifas) {
+    const organizador = await prisma.organizador.findUnique({
+      where: { id: rifa.organizadorId },
+      include: { usuario: true },
+    });
+
+    if (organizador) {
+      await prisma.logAuditoria.create({
+        data: {
+          acao: "CRIAÇÃO_DE_RIFA",
+          detalhes: `Rifa "${rifa.titulo}" criada com ${rifa.quantidadeBilhetes} bilhetes`,
+          rifaId: rifa.id,
+          usuarioId: organizador.usuario.id,
+        },
+      });
+    }
+  }
   // Criar bilhetes e vendas para todas as rifas
   for (const rifa of rifas) {
     // Criar bilhetes disponíveis
@@ -344,14 +362,22 @@ async function main() {
     }
   }
 
-  // Criar logs de auditoria
-  await prisma.logAuditoria.createMany({
-    data: rifas.map((rifa) => ({
-      acao: "Rifa criada",
-      detalhes: `${rifa.titulo} foi criada com sucesso`,
-      rifaId: rifa.id,
-    })),
-  });
+  for (const rifa of rifas) {
+    const bilhetesVendidos = await prisma.bilhete.count({
+      where: {
+        rifaId: rifa.id,
+        status: StatusBil.Vendido,
+      },
+    });
+
+    await prisma.logAuditoria.create({
+      data: {
+        acao: "VENDAS_DE_BILHETES",
+        detalhes: `${bilhetesVendidos} bilhetes vendidos para a rifa "${rifa.titulo}"`,
+        rifaId: rifa.id,
+      },
+    });
+  }
 
   // Criar notificações
   await prisma.notificacao.createMany({

@@ -14,8 +14,13 @@ model LogAuditoria {
   createdAt DateTime @default(now())
   detalhes  String?
 
-  rifaId Int  @unique
-  rifa   Rifa @relation(fields: [rifaId], references: [id])
+  // Relação com Rifa (opcional)
+  rifaId Int?
+  rifa   Rifa? @relation(onDelete: Cascade, fields: [rifaId], references: [id])
+
+  // Adicione esta relação no modelo Usuario se quiser registrar quem fez a ação
+  Usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+  usuarioId Int?
 }
 
 model Premio {
@@ -25,7 +30,7 @@ model Premio {
   imagem    String?
 
   rifaId        Int?                 @unique
-  rifa          Rifa?                @relation(fields: [rifaId], references: [id])
+  rifa          Rifa?                @relation(fields: [rifaId], references: [id], onDelete: Cascade)
   participantes PremioParticipante[]
 }
 
@@ -42,10 +47,10 @@ model Rifa {
   organizadorId Int
   organizador   Organizador @relation(fields: [organizadorId], references: [id])
 
-  sorteios Sorteio[]
-  bilhetes Bilhete[]
-  premio   Premio?
-  logs     LogAuditoria[]
+  sorteios     Sorteio[]
+  bilhetes     Bilhete[]
+  premio       Premio?
+  LogAuditoria LogAuditoria[]
 }
 
 model Organizador {
@@ -77,7 +82,7 @@ model Bilhete {
   createdAt DateTime  @default(now())
 
   rifaId         Int
-  rifa           Rifa          @relation(fields: [rifaId], references: [id])
+  rifa           Rifa          @relation(fields: [rifaId], references: [id], onDelete: Cascade)
   participanteId Int?
   participante   Participante? @relation(fields: [participanteId], references: [id])
   pagamento      Pagamento?
@@ -134,6 +139,7 @@ model Usuario {
   participante Participante?
 
   notificacoes Notificacao[]
+  LogAuditoria LogAuditoria[]
 }
 
 model PremioParticipante {

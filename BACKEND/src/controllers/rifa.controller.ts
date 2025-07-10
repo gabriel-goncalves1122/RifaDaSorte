@@ -50,8 +50,36 @@ export default class RifaController {
     try {
       await this.repository.remover(Number(req.params.id));
       res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ error: "Erro ao remover rifa" });
+    } catch (error: unknown) {
+      // Explicitamente tipado como unknown
+      console.error("Erro ao excluir rifa:", error);
+
+      // Tratamento básico para erros do tipo Error
+      if (error instanceof Error) {
+        // Verifica violação de chave estrangeira
+        if (error.message.includes("foreign key constraint")) {
+          return res.status(400).json({
+            success: false,
+            error: "Não foi possível excluir - existem registros vinculados",
+            solution: "Remova os registros associados primeiro",
+          });
+        }
+
+        // Erro genérico
+        return res.status(500).json({
+          success: false,
+          error: "Erro ao excluir rifa",
+          ...(process.env.NODE_ENV !== "production" && {
+            details: error.message,
+          }),
+        });
+      }
+
+      // Fallback para erros não identificados
+      res.status(500).json({
+        success: false,
+        error: "Ocorreu um erro desconhecido",
+      });
     }
   }
 

@@ -80,17 +80,65 @@ export default function Dashboard() {
   };
 
   const confirmarExclusao = async () => {
-    if (!rifaSelecionada) return;
+    if (!rifaSelecionada) {
+      console.error("Nenhuma rifa selecionada para exclusão");
+      setErro("Nenhuma rifa selecionada para exclusão");
+      setConfirmAberto(false);
+      return;
+    }
 
     try {
-      await axios.delete(`/rifas/${rifaSelecionada.id}`);
-      carregarRifas();
-      setConfirmAberto(false);
+      console.log("Iniciando exclusão da rifa ID:", rifaSelecionada.id);
+
+      const response = await axios.delete(`/rifas/${rifaSelecionada.id}`);
+
+      // Verifica se a exclusão foi bem-sucedida (status 2xx)
+      if (response.status >= 200 && response.status < 300) {
+        console.log("Rifa excluída com sucesso:", response.data);
+
+        // Atualiza a lista de rifas
+        await carregarRifas();
+
+        // Feedback visual para o usuário (opcional)
+        setErro(""); // Limpa erros anteriores
+        // Você poderia adicionar um estado para mensagens de sucesso
+
+        // Fecha o diálogo de confirmação
+        setConfirmAberto(false);
+      } else {
+        // Trata respostas não bem-sucedidas que não lançaram erro
+        throw new Error(response.data?.message || "Erro ao excluir rifa");
+      }
     } catch (error: any) {
-      setErro(error.response?.data?.message || "Erro ao excluir rifa");
+      console.error("Erro na exclusão:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+
+      // Mensagens de erro mais amigáveis
+      let errorMessage = "Erro ao excluir rifa";
+
+      if (error.response) {
+        if (error.response.status === 404) {
+          errorMessage = "Rifa não encontrada (já pode ter sido excluída)";
+        } else if (error.response.status === 403) {
+          errorMessage = "Você não tem permissão para excluir esta rifa";
+        } else if (error.response.data?.message) {
+          errorMessage = error.response.data.message;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      setErro(errorMessage);
+
+      // Mantém o diálogo aberto apenas se for um erro recuperável
+      if (error.response?.status === 404 || error.response?.status === 403) {
+        setConfirmAberto(false);
+      }
     }
   };
-
   const organizadorId = 1;
 
   const salvarRifa = async (rifa: any) => {
